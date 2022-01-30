@@ -11,11 +11,11 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 function escutaMensagensEmTempoReal(adicionaMensagem) {
     return supabaseClient
-      .from('mensagens')
-      .on('INSERT', (respostaLive) => {
-        adicionaMensagem(respostaLive.new);
-      })
-      .subscribe();
+        .from('mensagens')
+        .on('INSERT', (respostaLive) => {
+            adicionaMensagem(respostaLive.new);
+        })
+        .subscribe();
 }
 
 export default function ChatPage() {
@@ -28,25 +28,25 @@ export default function ChatPage() {
         supabaseClient
             .from('mensagens')
             .select('*')
-            .order('id', {ascending: false})
-            .then(({data}) => {
+            .order('id', { ascending: false })
+            .then(({ data }) => {
                 //console.log('Dados da consulta:  ', data);
                 setListaDeMensagens(data);
             });
 
-            const subscription = escutaMensagensEmTempoReal((novaMensagem) => {
-                setListaDeMensagens((valorAtualDaLista) => {
-                  //console.log('valorAtualDaLista:', valorAtualDaLista);
-                  return [
+        const subscription = escutaMensagensEmTempoReal((novaMensagem) => {
+            setListaDeMensagens((valorAtualDaLista) => {
+                //console.log('valorAtualDaLista:', valorAtualDaLista);
+                return [
                     novaMensagem,
                     ...valorAtualDaLista,
-                  ]
-                });
-              });
-          
-              return () => {
-                subscription.unsubscribe();
-              }
+                ]
+            });
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        }
     }, []);
 
     function handleNovaMensagem(novaMensagem) {
@@ -60,7 +60,7 @@ export default function ChatPage() {
                 //Tem que ser um objeto com os MESMOS CAMPOS que você escreveu no supabase
                 mensagem
             ])
-            .then(({data}) => {
+            .then(({ data }) => {
                 /* setListaDeMensagens([
                     data[0],
                     ...listaDeMensagens
@@ -71,46 +71,48 @@ export default function ChatPage() {
     }
 
     return (
-        <Box
-            styleSheet={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                backgroundColor: appConfig.theme.colors.primary[500],
-                backgroundImage: `url(https://wallpapersmug.com/large/7d0118/blue-moon-nature-sunrise-nature-art.jpg)`,
-                backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
-                color: appConfig.theme.colors.neutrals['000']
-            }}
-        >
+        <>
+            <link href="/your-path-to-fontawesome/css/fontawesome.css" rel="stylesheet"></link>
             <Box
                 styleSheet={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flex: 1,
-                    boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-                    borderRadius: '5px',
-                    backgroundColor: appConfig.theme.colors.neutrals[700],
-                    height: '100%',
-                    maxWidth: '95%',
-                    maxHeight: '95vh',
-                    padding: '32px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: appConfig.theme.colors.primary[500],
+                    backgroundImage: `url(https://wallpapersmug.com/large/7d0118/blue-moon-nature-sunrise-nature-art.jpg)`,
+                    backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
+                    color: appConfig.theme.colors.neutrals['000']
                 }}
             >
-                <Header />
                 <Box
                     styleSheet={{
-                        position: 'relative',
                         display: 'flex',
-                        flex: 1,
-                        height: '80%',
-                        backgroundColor: appConfig.theme.colors.neutrals[600],
                         flexDirection: 'column',
+                        flex: 1,
+                        boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
                         borderRadius: '5px',
-                        padding: '16px',
+                        backgroundColor: appConfig.theme.colors.neutrals[700],
+                        height: '100%',
+                        maxWidth: '95%',
+                        maxHeight: '95vh',
+                        padding: '32px',
                     }}
                 >
+                    <Header />
+                    <Box
+                        styleSheet={{
+                            position: 'relative',
+                            display: 'flex',
+                            flex: 1,
+                            height: '80%',
+                            backgroundColor: appConfig.theme.colors.neutrals[600],
+                            flexDirection: 'column',
+                            borderRadius: '5px',
+                            padding: '16px',
+                        }}
+                    >
 
-                    <MessageList mensagens={listaDeMensagens} />
+                        <MessageList mensagens={listaDeMensagens} />
 
-                    {/* {listaDeMensagens.map((mensagemAtual) => {
+                        {/* {listaDeMensagens.map((mensagemAtual) => {
                         return (
                             <li key={mensagemAtual.id}>
                                 {mensagemAtual.de}: {mensagemAtual.texto}
@@ -118,49 +120,75 @@ export default function ChatPage() {
                         )
                     })} */}
 
-                    <Box
-                        as="form"
-                        styleSheet={{
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <TextField
-                            value={mensagem}
-                            onChange={(event) => {
-                                const valor = event.target.value;
-                                setMensagem(valor);
-                            }}
-                            onKeyPress={(event) => {
-                                if (event.key === 'Enter') {
-                                    event.preventDefault();
-
-                                    handleNovaMensagem(mensagem);
-                                }
-                            }}
-                            placeholder="Insira sua mensagem aqui..."
-                            type="textarea"
+                        <Box
+                            as="form"
                             styleSheet={{
-                                width: '100%',
-                                border: '0',
-                                resize: 'none',
-                                borderRadius: '5px',
-                                padding: '6px 8px',
-                                backgroundColor: appConfig.theme.colors.neutrals[800],
-                                marginRight: '12px',
-                                color: appConfig.theme.colors.neutrals[200],
+                                display: 'flex',
+                                alignItems: 'center',
                             }}
-                        />
-                        <ButtonSendSticker
-                            onStickerClick={(sticker) => {
-                                //console.log('Salva esse sticker no banco', sticker);
-                                handleNovaMensagem(':sticker:' + sticker)
-                            }}
-                        />
+                        >
+                            <TextField
+                                value={mensagem}
+                                onChange={(event) => {
+                                    const valor = event.target.value;
+                                    setMensagem(valor);
+                                }}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter') {
+                                        event.preventDefault();
+
+                                        handleNovaMensagem(mensagem);
+                                    }
+                                }}
+                                placeholder="Insira sua mensagem aqui..."
+                                type="textarea"
+                                styleSheet={{
+                                    width: '100%',
+                                    border: '0',
+                                    resize: 'none',
+                                    borderRadius: '5px',
+                                    padding: '6px 8px',
+                                    backgroundColor: appConfig.theme.colors.neutrals[800],
+                                    marginRight: '12px',
+                                    color: appConfig.theme.colors.neutrals[200],
+                                }}
+                            />
+                            <ButtonSendSticker
+                                onStickerClick={(sticker) => {
+                                    //console.log('Salva esse sticker no banco', sticker);
+                                    handleNovaMensagem(':sticker:' + sticker)
+                                }}
+                            />
+                            <Button
+                                styleSheet={{
+                                    borderRadius: '50%',
+                                    padding: '0 3px 0 0',
+                                    minWidth: '50px',
+                                    minHeight: '50px',
+                                    fontSize: '20px',
+                                    marginBottom: '8px',
+                                    lineHeight: '0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: appConfig.theme.colors.neutrals[300],
+                                    hover: {
+                                        filter: 'grayscale(0)',
+                                    }
+                                }}
+                                buttonColors={{
+                                    contrastColor: appConfig.theme.colors.neutrals["000"],
+                                    mainColorStrong: appConfig.theme.colors.primary[600],
+                                }}
+                                label='➔'
+                                type='button'
+                                onClick={() => handleNovaMensagem(mensagem)}
+                            />
+                        </Box>
                     </Box>
                 </Box>
             </Box>
-        </Box>
+        </>
     )
 }
 
@@ -188,7 +216,7 @@ function MessageList(props) {
         <Box
             tag="ul"
             styleSheet={{
-                overflow: 'scroll',
+                overflowY: 'scroll',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
@@ -213,6 +241,9 @@ function MessageList(props) {
                         <Box
                             styleSheet={{
                                 marginBottom: '8px',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center'
                             }}
                         >
                             <Image
@@ -246,12 +277,12 @@ function MessageList(props) {
                             else
                                 mensagem.texto
                         */}
-                        {mensagem.texto.startsWith(':sticker:') 
+                        {mensagem.texto.startsWith(':sticker:')
                             ? (
-                                <Image src={mensagem.texto.replace(':sticker:', '')}/>
+                                <Image src={mensagem.texto.replace(':sticker:', '')} />
                             )
                             : (
-                                mensagem.texto   
+                                mensagem.texto
                             )}
                     </Text>
                 )

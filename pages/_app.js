@@ -10,6 +10,22 @@ function GlobalStyle() {
         body {
           font-family: 'Open Sans', sans-serif;
         }
+
+        ::-webkit-scrollbar {
+          width: 10px;             
+        }
+        
+        ::-webkit-scrollbar-track {
+          background:#212931;
+          border-radius: 10px;       
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background-color: #066D89;   
+          border-radius: 10px;      
+          border: 2px solid #181F25; 
+        }
+
         /* App fit Height */ 
         html, body, #__next {
           min-height: 100vh;

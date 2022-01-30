@@ -9,6 +9,7 @@ export function ButtonSendSticker(props) {
     <Box
       styleSheet={{
         position: 'relative',
+        paddingRight: '10px'
       }}
     >
       <Button
@@ -28,6 +29,9 @@ export function ButtonSendSticker(props) {
           hover: {
             filter: 'grayscale(0)',
           }
+        }}
+        buttonColors={{
+            mainColorStrong: appConfig.theme.colors.primary[600],
         }}
         label="😋"
         onClick={() => setOpenState(!isOpen)}
@@ -68,7 +72,7 @@ export function ButtonSendSticker(props) {
               justifyContent: 'space-between',
               flex: 1,
               paddingTop: '16px',
-              overflow: 'scroll',
+              overflowY: 'scroll',
             }}
           >
             {appConfig.stickers.map((sticker) => (
